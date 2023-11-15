@@ -1,8 +1,10 @@
 <?php
-
+session_start();
 require './../config/db.php';
 
-if(isset($_POST['submit'])) {
+$error_message = ''; // Initialize error message variable
+
+if (isset($_POST['submit'])) {
 
     global $db_connect;
 
@@ -11,22 +13,35 @@ if(isset($_POST['submit'])) {
     $password = $_POST['password'];
     $confirm = $_POST['confirm'];
 
-    if($confirm != $password) {
-        echo "password tidak sesuai dengan konfirmasi password";
-        die;
+    // Check if password meets length and contains at least one digit
+    if (strlen($password) < 6 || !preg_match('/\d/', $password)) {
+        $error_message = "Password must be at least 6 characters long and contain at least one digit.";
+    } elseif ($confirm != $password) {
+        $error_message = "Password doesn't match the confirmation.";
+    } else {
+
+        $usedEmail = mysqli_query($db_connect, "SELECT email FROM users WHERE email = '$email'");
+        if (mysqli_num_rows($usedEmail) > 0) {
+            $error_message = "Email is already in use.";
+        } else {
+            $password = password_hash($password, PASSWORD_DEFAULT);
+            $created_at = date('Y-m-d H:i:s', time());
+
+            $users = mysqli_query($db_connect, "INSERT INTO users (name, email, password, created_at) VALUES
+                                ('$name','$email','$password','$created_at')");
+
+            if ($users) {
+                $_SESSION['success_message'] = "Registration successful. You can now log in.";
+                header("Location: ../index.php");
+                exit();
+            } else {
+                $error_message = "Registration failed. Please try again.";
+            }
+        }
     }
 
-    $usedEmail = mysqli_query($db_connect,"SELECT email FROM users WHERE email = '$email'");
-    if(mysqli_num_rows($usedEmail) > 0) {
-        echo "email sudah digunakan";
-        die;
-    }
-
-    $password = password_hash($password,PASSWORD_DEFAULT);
-    $created_at = date('Y-m-d H:i:s',time());
-        
-    $users = mysqli_query($db_connect,"INSERT INTO users (name,email, password,created_at) VALUES
-                            ('$name','$email','$password','$created_at')");
-
-    echo "registrasi berhasil";
+    $_SESSION['error_message'] = $error_message;
+    header("Location: ../register.php");
+    exit();
 }
+?>
