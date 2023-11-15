@@ -1,0 +1,12 @@
+
+
+1.  Secara sederhana, sebuah "framework" dalam pengembangan aplikasi adalah kerangka kerja atau struktur yang sudah disiapkan
+    untuk membantu pengembang membangun aplikasi dengan lebih cepat dan efisien.
+
+2.  a. Klinik
+    b. husni = backend
+       Danto = frontend
+       Liyan = Db
+    c. permasalahan = reservasi masih lewat wa, tidak ada stock management obat
+       perbaikan = membuat sistem reservasi by sistem dan membuat sistem management obat
+    
