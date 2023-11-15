@@ -2,7 +2,7 @@
 session_start();
 require './../config/db.php';
 
-$error_message = ''; // Initialize error message variable
+$error_message = ''; 
 
 if (isset($_POST['submit'])) {
 
@@ -13,7 +13,6 @@ if (isset($_POST['submit'])) {
     $password = $_POST['password'];
     $confirm = $_POST['confirm'];
 
-    // Check if password meets length and contains at least one digit
     if (strlen($password) < 6 || !preg_match('/\d/', $password)) {
         $error_message = "Password must be at least 6 characters long and contain at least one digit.";
     } elseif ($confirm != $password) {
